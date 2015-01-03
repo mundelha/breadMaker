@@ -115,134 +115,153 @@ void loop() {
   
   switch(myState){
     
-      case 0:
-        // Initialization message
-        // Print a message to the LCD.
-        lcd.print("Hannah's BreadMaker <3");
-        // Turn on the display:
-        lcd.display();
-        delay(500);
-        // Turn off the display:
-        lcd.noDisplay();
-        delay(500);
-        myState = 1;
-        
-      case 1:
-        // Idle state
-        lcd.print("Press * to Start!");
-        lcd.display(); //not sure if I need this
-        key = numpad.waitForKey(); //not sure if need to add getKey() after this
-        if (key == '*'){
-          myState = 2;
-        }
-        // Turn off the display:
-        lcd.noDisplay();
-        
-      case 2:
-        // Ask for rise time
-        lcd.print("To start over press *./n");
-        lcd.display();
-        delay(1000);
-        lcd.noDisplay();
-    
-        // Get rise time
-        lcd.print("Enter Rise Time (min),/n");
-        lcd.print("Followed by #: /n");
-        lcd.display(); // Do I need to write this?
-        
-       // Store rise time as an int
-        // As the time only goes up to a few hours, there are a max of 3 digits, so we input 2 into the function
-        rise1 = get_input(2);
-        
-        // Turn off the display to move on
-        lcd.noDisplay();
-        
-        // Get rise temperature
-        myState = 3;
-        
-      case 3:
-        // Ask for rise temperature
-        lcd.print("Enter Rise Temp (C),/n");
-        lcd.print("Followed by #: /n");
-        lcd.display(); // Do I need to write this?
-        
-        // Store rise temp as an int
-        // As the temperature only goes up to 99 C, there are a max of 2 digits, so we input 1 into the function
-        rise1_temp = get_input(1);
-        
-        // Turn off the display to move on
-        lcd.noDisplay();
-        
-        // Get knock time
-        myState = 4;
-        
-      case 4:
-        // Ask for knock time
-        lcd.print("Enter Knock Time (min),/n");
-        lcd.print("Followed by #: /n");
-        lcd.display(); // Do I need to write this?
-        
-        // Store knock time as an int
-        // As the time only goes up to a few hours, there are a max of 3 digits, so we input 2 into the function
-        knock1 = get_input(2);
-        
-        // Turn off the display to move on
-        lcd.noDisplay();
-        
-        // Get second rise time
-        myState = 5;
-        
-      case 5:
-        // Ask for second rise time
-        lcd.print("Enter Second Rise Time (min),/n");
-        lcd.print("Followed by #: /n");
-        lcd.display(); // Do I need to write this?
-        
-        // Store second rise time as an int
-        // As the time only goes up to a few hours, there are a max of 3 digits, so we input 2 into the function
-        rise2 = get_input(2);
-        
-        // Turn off the display to move on
-        lcd.noDisplay();
-        
-        // Get second rise temp
-        myState = 6;
-        
-      case 6:
-        // Ask for second rise temp
-        lcd.print("Enter Second Rise Temp (C),/n");
-        lcd.print("Followed by #: /n");
-        lcd.display(); // Do I need to write this?
-        
-        // Store second rise temp as an int
-        // As the temperature only goes up to 99 C, there are a max of 2 digits, so we input 1 into the function
-        rise2_temp = get_input(1);
-        
-        // Turn off the display to move on
-        lcd.noDisplay();
-        
-        // Move on to next stage: Start Mixing
-        myState = 7;
+    case 0:
+      // Initialization message
+      // Print a message to the LCD.
+      printTwoLines("Hannah's", "BreadMaker <3");
+      // Turn on the display:
+      //lcd.display();
+      delay(2000);
+      // Turn off the display:
+      lcd.clear();
+      //lcd.noDisplay();
+      delay(500);
+      myState = 2;
+      break;
       
-      case 7:
-        // First Mixing Stage!
-        lcd.print("Mixing!/n");
-        lcd.print("Time Left:");
-        // Indicate time left
-        lcd.display();
+    case 1:
+      // Idle state
+      lcd.print("Press * to Start!");
+      //lcd.display(); //not sure if I need this
+      key = numpad.waitForKey(); //not sure if need to add getKey() after this
+      while (key != '*'){
+        key = numpad.waitForKey();
+      }
+      myState = 2;
+      // Turn off the display:
+      lcd.clear();
+      //lcd.noDisplay();
+      break;
+      
+    case 2:
+      // Ask for rise time
+      printTwoLines("To erase,", "Press *!");
+      //lcd.display();
+      delay(1000);
+      //lcd.noDisplay();
+      lcd.clear();
+    
+      // Get rise time
+      printTwoLines("Enter Rise Time", "In minutes");
+      delay(1000);
+      lcd.clear();
+      lcd.print("Press # if done:");
+      lcd.setCursor(0, 1);
+      // Store rise time as an int
+      // As the time only goes up to a few hours, there are a max of 3 digits, so we input 2 into the function
+      rise1 = get_input(2);
+      // Allow time for user to see entered time
+      delay(500);
+      // Turn off the display to move on
+      lcd.noDisplay();
+      
+      // Get rise temperature
+      if (rise1 != NULL){
+        myState = 3;
+      }
+      else{
+        printTwoLines("Sorry, you must", "enter a value.");
+        myState = 2;
+      }
+      break;
+      
+    case 3:
+      // Ask for rise temperature
+      lcd.print("Enter Rise Temp (C),/n");
+      lcd.print("Followed by #: /n");
+      lcd.display(); // Do I need to write this?
         
-        // Indicate time left
-        // This returns the amount of time that has passed since the beginning of the program
-        time_begin = millis();
-        // This returns the amount of time that has passed since the beginning of the program
-        time_end = millis();
-        // Find time left, convert to minutes
-        time_left = (float)mix - (float)(((time_end - time_begin))/60000);
-        lcd.print('%.2f', time_left); // can I do this?
-        lcd.display();
+      // Store rise temp as an int
+      // As the temperature only goes up to 99 C, there are a max of 2 digits, so we input 1 into the function
+      rise1_temp = get_input(1);
+       
+      // Turn off the display to move on
+      lcd.noDisplay();
+        
+      // Get knock time
+      myState = 4;
+      break;
+      
+    case 4:
+      // Ask for knock time
+      lcd.print("Enter Knock Time (min),/n");
+      lcd.print("Followed by #: /n");
+      lcd.display(); // Do I need to write this?
+       
+      // Store knock time as an int
+      // As the time only goes up to a few hours, there are a max of 3 digits, so we input 2 into the function
+      knock1 = get_input(2);
+        
+      // Turn off the display to move on
+      lcd.noDisplay();
+      
+      // Get second rise time
+      myState = 5;
+      break;
+      
+    case 5:
+      // Ask for second rise time
+      lcd.print("Enter Second Rise Time (min),/n");
+      lcd.print("Followed by #: /n");
+      lcd.display(); // Do I need to write this?
+        
+      // Store second rise time as an int
+      // As the time only goes up to a few hours, there are a max of 3 digits, so we input 2 into the function
+      rise2 = get_input(2);
+        
+      // Turn off the display to move on
+      lcd.noDisplay();
+        
+      // Get second rise temp
+      myState = 6;
+      break;
+      
+    case 6:
+      // Ask for second rise temp
+      lcd.print("Enter Second Rise Temp (C),/n");
+      lcd.print("Followed by #: /n");
+      lcd.display(); // Do I need to write this?
+        
+      // Store second rise temp as an int
+      // As the temperature only goes up to 99 C, there are a max of 2 digits, so we input 1 into the function
+      rise2_temp = get_input(1);
+        
+      // Turn off the display to move on
+      lcd.noDisplay();
+        
+      // Move on to next stage: Start Mixing
+      myState = 7;
+      break;
+      
+    case 7:
+      // First Mixing Stage!
+      lcd.print("Mixing!/n");
+      lcd.print("Time Left:");
+      // Indicate time left
+      lcd.display();
+        
+      // Indicate time left
+      // This returns the amount of time that has passed since the beginning of the program
+      time_begin = millis();
+      // This returns the amount of time that has passed since the beginning of the program
+      time_end = millis();
+      // Find time left, convert to minutes
+      time_left = (float)mix - (float)(((time_end - time_begin))/60000);
+      lcd.print('%.2f', time_left); // can I do this?
+      lcd.display();
                
-        // Loop through motor control until the set time runs out
-        while((time_end - time_begin) < mix) {
+      // Loop through motor control until the set time runs out
+      while((time_end - time_begin) < mix) {
           // Control motor
         
           // Clockwise spin, gradual speed increase to fast, short time
@@ -254,92 +273,94 @@ void loop() {
           // Counter-clockwise spin, gradual speed increase to slow, longer
 
           // Get time that has elapsed, print to LCD
-          lcd.print("Knocking Stage :)");
-          lcd.print("Time Left: ");
-          lcd.display();
-        
-          // Indicate time left
-          // This returns the amount of time that has passed since the beginning of the program
-          time_end = millis();
-          // Find time left, convert to minutes
-          time_left = (float)mix - (float)(((time_end - time_begin))/60000);
-          lcd.print('%.2f', time_left);
-          // Get new time elapsed - is this too redundant..?
-          time_end = millis();
-        }
-        
-        // Indicate the process has finished
-        lcd.print("Done mixing!\n");
-        lcd.display();
-        delay(500);
-        
-        // Move on to first rise
-        myState = 8;
-        
-      case 8:
-        // First Rising Stage!
-        lcd.print("First Rising Stage :)\n");
+        lcd.print("Knocking Stage :)");
         lcd.print("Time Left: ");
         lcd.display();
         
         // Indicate time left
         // This returns the amount of time that has passed since the beginning of the program
-        time_begin = millis();
+        time_end = millis();
+        // Find time left, convert to minutes
+        time_left = (float)mix - (float)(((time_end - time_begin))/60000);
+        lcd.print('%.2f', time_left);
+        // Get new time elapsed - is this too redundant..?
+        time_end = millis();
+      }
+        
+      // Indicate the process has finished
+      lcd.print("Done mixing!\n");
+      lcd.display();
+      delay(500);
+        
+      // Move on to first rise
+      myState = 8;
+      break;
+      
+    case 8:
+      // First Rising Stage!
+      lcd.print("First Rising Stage :)\n");
+      lcd.print("Time Left: ");
+      lcd.display();
+        
+      // Indicate time left
+      // This returns the amount of time that has passed since the beginning of the program
+      time_begin = millis();
+      // This returns the amount of time that has passed since the beginning of the program
+      time_end = millis();
+      // Find time left, convert to minutes
+      time_left = (float)rise1 - (float)(((time_end - time_begin))/60000);
+      lcd.print('%.2f', time_left); // can I do this?
+      lcd.display();
+               
+      // Loop through getting the temperature and turning on the coil until the set time runs out
+      while((time_end - time_begin) < rise1) {
+        // Control temperature
+        temp_control(rise1_temp);
+
+        // Get time that has elapsed, print to LCD
+        lcd.print("First Rising Stage :)");
+        lcd.print("Time Left: ");
+        lcd.display();
+        
+        // Indicate time left
         // This returns the amount of time that has passed since the beginning of the program
         time_end = millis();
         // Find time left, convert to minutes
         time_left = (float)rise1 - (float)(((time_end - time_begin))/60000);
-        lcd.print('%.2f', time_left); // can I do this?
-        lcd.display();
-               
-        // Loop through getting the temperature and turning on the coil until the set time runs out
-        while((time_end - time_begin) < rise1) {
-          // Control temperature
-          temp_control(rise1_temp);
-
-          // Get time that has elapsed, print to LCD
-          lcd.print("First Rising Stage :)");
-          lcd.print("Time Left: ");
-          lcd.display();
-        
-          // Indicate time left
-          // This returns the amount of time that has passed since the beginning of the program
-          time_end = millis();
-          // Find time left, convert to minutes
-          time_left = (float)rise1 - (float)(((time_end - time_begin))/60000);
-          lcd.print('%.2f', time_left);
-          // Get new time elapsed - is this too redundant..?
-          time_end = millis();
-        }
-        
-        // Indicate the process has finished
-        lcd.print("Done rising!\n");
-        lcd.display();
-        delay(500);
-                        
-        // Move on to knock stage
-        myState = 9;
-        
-      case 9:
-        // Knock Stage
-        // This stage has the purpose of evening out the fluffiness of the bread: the bubbles are knocked down, then more are allowed to be made.
-        lcd.print("Knocking Stage :)");
-        lcd.print("Time Left:");
-        // Indicate time left
-        lcd.display();
-        
-        // Indicate time left
-        // This returns the amount of time that has passed since the beginning of the program
-        time_begin = millis();
-        // This returns the amount of time that has passed since the beginning of the program
+        lcd.print('%.2f', time_left);
+        // Get new time elapsed - is this too redundant..?
         time_end = millis();
-        // Find time left, convert to minutes
-        time_left = (float)knock1 - (float)(((time_end - time_begin))/60000);
-        lcd.print('%.2f', time_left); // can I do this?
-        lcd.display();
+      }
+        
+      // Indicate the process has finished
+      lcd.print("Done rising!\n");
+      lcd.display();
+      delay(500);
+                        
+      // Move on to knock stage
+      myState = 9;
+      break;
+      
+    case 9:
+      // Knock Stage
+      // This stage has the purpose of evening out the fluffiness of the bread: the bubbles are knocked down, then more are allowed to be made.
+      lcd.print("Knocking Stage :)");
+      lcd.print("Time Left:");
+      // Indicate time left
+      lcd.display();
+        
+      // Indicate time left
+      // This returns the amount of time that has passed since the beginning of the program
+      time_begin = millis();
+      // This returns the amount of time that has passed since the beginning of the program
+      time_end = millis();
+      // Find time left, convert to minutes
+      time_left = (float)knock1 - (float)(((time_end - time_begin))/60000);
+      lcd.print('%.2f', time_left); // can I do this?
+      lcd.display();
                
-        // Loop through motor control until the set time runs out
-        while((time_end - time_begin) < rise2) {
+      // Loop through motor control until the set time runs out
+      while((time_end - time_begin) < rise2) {
           // Control motor
          
           // Clockwise spin, gradual speed increase to slow
@@ -347,80 +368,83 @@ void loop() {
           // Counter-clockwise spin, gradual speed increase to slow
 
           // Get time that has elapsed, print to LCD
-          lcd.print("Knocking Stage :)");
-          lcd.print("Time Left: ");
-          lcd.display();
-        
-          // Indicate time left
-          // This returns the amount of time that has passed since the beginning of the program
-          time_end = millis();
-          // Find time left, convert to minutes
-          time_left = (float)knock1 - (float)(((time_end - time_begin))/60000);
-          lcd.print('%.2f', time_left);
-          // Get new time elapsed - is this too redundant..?
-          time_end = millis();
-        }
-        
-        // Indicate the process has finished
-        lcd.print("Done knocking!\n");
-        lcd.display();
-        delay(500);
-        
-        // Move on to second rise time
-        myState = 10;
-        
-      case 10:
-        // Second Rise Time
-        lcd.print("Second Rising Stage :)");
-        lcd.print("Almost Done:");
-        // Indicate time left
+        lcd.print("Knocking Stage :)");
+        lcd.print("Time Left: ");
         lcd.display();
         
         // Indicate time left
         // This returns the amount of time that has passed since the beginning of the program
-        time_begin = millis();
+        time_end = millis();
+        // Find time left, convert to minutes
+        time_left = (float)knock1 - (float)(((time_end - time_begin))/60000);
+        lcd.print('%.2f', time_left);
+        // Get new time elapsed - is this too redundant..?
+        time_end = millis();
+      }
+        
+      // Indicate the process has finished
+      lcd.print("Done knocking!\n");
+      lcd.display();
+      delay(500);
+        
+      // Move on to second rise time
+      myState = 10;
+      break;
+      
+    case 10:
+      // Second Rise Time
+      lcd.print("Second Rising Stage :)");
+      lcd.print("Almost Done:");
+      // Indicate time left
+      lcd.display();
+        
+      // Indicate time left
+      // This returns the amount of time that has passed since the beginning of the program
+      time_begin = millis();
+      // This returns the amount of time that has passed since the beginning of the program
+      time_end = millis();
+      // Find time left, convert to minutes
+      time_left = (float)rise2 - (float)(((time_end - time_begin))/60000);
+      lcd.print('%.2f', time_left); // can I do this?
+      lcd.display();
+               
+      // Loop through getting the temperature and turning on the coil until the set time runs out
+      while((time_end - time_begin) < rise2) {
+        // Control temperature
+        temp_control(rise2_temp);
+        
+        // Get time that has elapsed, print to LCD
+        lcd.print("Second Rising Stage :)");
+        lcd.print("Time Left: ");
+        lcd.display();
+        
+        // Indicate time left
         // This returns the amount of time that has passed since the beginning of the program
         time_end = millis();
         // Find time left, convert to minutes
         time_left = (float)rise2 - (float)(((time_end - time_begin))/60000);
-        lcd.print('%.2f', time_left); // can I do this?
-        lcd.display();
-               
-        // Loop through getting the temperature and turning on the coil until the set time runs out
-        while((time_end - time_begin) < rise2) {
-          // Control temperature
-          temp_control(rise2_temp);
-
-          // Get time that has elapsed, print to LCD
-          lcd.print("Second Rising Stage :)");
-          lcd.print("Time Left: ");
-          lcd.display();
-        
-          // Indicate time left
-          // This returns the amount of time that has passed since the beginning of the program
-          time_end = millis();
-          // Find time left, convert to minutes
-          time_left = (float)rise2 - (float)(((time_end - time_begin))/60000);
-          lcd.print('%.2f', time_left);
-          // Get new time elapsed - is this too redundant..?
-          time_end = millis();
-        }
-        
-        // Indicate the process has finished
-        lcd.print("Done rising!\n");
-        lcd.display();
-        delay(500);
-        
-        // Move on to final stage
-        myState = 11;
-        
-        case 11:
-        // Final Stage!!
-        
-        default:
-        // Some default
-        myState = 0;
+        lcd.print('%.2f', time_left);
+        // Get new time elapsed - is this too redundant..?
+        time_end = millis();
       }
+        
+      // Indicate the process has finished
+      lcd.print("Done rising!\n");
+      lcd.display();
+      delay(500);
+        
+      // Move on to final stage
+      myState = 11;
+      break;
+      
+    case 11:
+      // Final Stage!!
+      break;    
+    default:
+      // Some default
+      myState = 0;
+      break;
+    }
 }
 
 // Function to control temperature
@@ -464,21 +488,29 @@ int get_input(int k){
         key = numpad.waitForKey();
         int output;
         
-        // Get Time: loop through keys pressed as long as the 'start over' key '#' is not pressed
-        while ((key != '*') | (i < k)){
-          // When '*' is pressed, (or when '#' is) need to fill in the rest of the string with NULLs
-          if((key == '*') | (key == '#')){
+        // Get Time: loop through keys pressed as long as the 'start over' key is not pressed and number of keys pressed does not exceed maximum
+        while (i < k){
+          // When "enter" '#' is pressed need to fill in the rest of the string with NULLs
+          if(key == '#'){
             while (i < k){
             // Set last characters in the array to null
             key_string[i] = NULL;
             i++; // can I do this?
             }
           }
-          else{
-            lcd.print(key);
-            key_string[i] = key;
-            i++;
+          else if (key == '*'){
+            if (i != 0){
+              // When "erase" '*' is pressed then remove one i value and move cursor back by one
+              i--;
+              lcd.setCursor(i, 1);
+            }
             key = numpad.waitForKey();
+          }
+          else{
+           lcd.print(key);
+           key_string[i] = key;
+           i++;
+           key = numpad.waitForKey();
           }
         }
         
@@ -487,6 +519,29 @@ int get_input(int k){
         return output;
 }
 
+// Function to control LCD screen
+void scrollAndPrint( char * text ){
+  
+  lcd.setCursor(16,0);
+  lcd.print(text);
+  int i = 0;
+  
+  while (text[i] != NULL){
+    lcd.scrollDisplayLeft();
+    delay(500);
+    i++;
+  }
+  
+  lcd.clear();
+  
+}
+
+void printTwoLines(char * text1, char * text2){
+  lcd.setCursor(0,0);
+  lcd.print(text1);
+  lcd.setCursor(0,1);
+  lcd.print(text2);
+}
 
 // OneWire DS18S20, DS18B20, DS1822 Temperature Example
 //
